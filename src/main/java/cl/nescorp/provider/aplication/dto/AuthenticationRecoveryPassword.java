@@ -1,7 +1,5 @@
 package cl.nescorp.provider.aplication.dto;
 
-
-import cl.nescorp.provider.aplication.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,10 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
+public class AuthenticationRecoveryPassword {
 
+  private String rut;
   private String correo;
-  private String password;
-  private String dni;
-  private Role role;
 }

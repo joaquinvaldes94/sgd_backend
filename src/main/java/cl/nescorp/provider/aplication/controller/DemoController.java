@@ -13,9 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Hidden
 public class DemoController {
 
-	@GetMapping(value="/pruebaApp",produces = {MediaType.APPLICATION_JSON_VALUE})
+	@GetMapping(value="/pruebaAppFreeToken",produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<String> sayHello() {
-    return ResponseEntity.ok("Hello from secured endpoint");
+    return ResponseEntity.ok("Hola Nes Corp, desde endPoint free in aplicación");
   }
 
+	
+	@GetMapping(value="/pruebaApp",produces = {MediaType.APPLICATION_JSON_VALUE})
+	  public ResponseEntity<String> sayHelloSecurity() {
+	    return ResponseEntity.ok("Hola Nes Corp, desde endPoint con seguridad");
+	  }
 }
