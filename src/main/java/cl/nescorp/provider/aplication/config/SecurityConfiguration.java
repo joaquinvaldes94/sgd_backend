@@ -32,7 +32,12 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests()
                 .requestMatchers(
                 		//"api/v1/demo-controller/pruebaApp",
-                        "/api/v1/auth/**",
+                        "/api/v1/auth/register",
+                        "/api/v1/auth/authenticate",
+                        "/api/v1/auth/refresh-token",
+                        "/api/v1/auth/recoveryPassword",
+                        "/api/v1/auth/changeNewPassword",
+                        
                         "/v2/api-docs",
                         "/v3/api-docs",
                         "/v3/api-docs/**",
@@ -42,7 +47,8 @@ public class SecurityConfiguration {
                         "/configuration/security",
                         "/swagger-ui/**",
                         "/webjars/**",
-                        "/swagger-ui.html"
+                        "/swagger-ui.html",
+                        "/api/v1/demo-controller/pruebaAppFreeToken"
                 )
                 .permitAll()
 

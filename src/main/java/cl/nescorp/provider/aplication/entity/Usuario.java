@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -29,31 +29,41 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "USUARIO")
-public class Usuario implements UserDetails  {
+public class Usuario implements UserDetails {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer id;	
-	
-	@Column(name="nick",nullable = false , unique = true)
-	private String nick;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-	@Column(name="password",nullable = false)
-    private String password;
-	
-	@Column(name="estado",nullable = false)
+	@Column(name = "dni", length = 9, nullable = false, unique = true)
+	private Integer dni;
+
+	@Column(name = "correo", nullable = false, unique = true)
+	private String correo;
+
+	@Column(name = "password", length = 16, nullable = false)
+	private String password;
+
+	@Column(name = "estado", nullable = false)
 	private Integer estado;
-	
-	@Column(name="fechaCreacion",nullable = false)
+
+	@Column(name = "fechaCreacion", nullable = false)
 	private LocalDateTime fechaCreacion;
-	
+
 	@Enumerated(EnumType.STRING)
 	private Role role;
-	
+
 	@OneToMany(mappedBy = "usuario")
 	private List<Token> tokens;
-	
-	
+
+	@OneToMany(mappedBy = "usuario", cascade = CascadeType.MERGE)
+	private List<LoginHistory> logueos;
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return List.of(new SimpleGrantedAuthority(role.name()));
@@ -62,7 +72,7 @@ public class Usuario implements UserDetails  {
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		return nick;
+		return dni.toString();
 	}
 
 	@Override
@@ -73,8 +83,8 @@ public class Usuario implements UserDetails  {
 
 	@Override
 	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return true;
+
+		return this.estado == 3 ? false : true;
 	}
 
 	@Override
@@ -88,7 +98,5 @@ public class Usuario implements UserDetails  {
 		// TODO Auto-generated method stub
 		return true;
 	}
-
-
 
 }
