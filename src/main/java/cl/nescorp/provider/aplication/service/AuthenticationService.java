@@ -7,6 +7,7 @@ import cl.nescorp.provider.aplication.dto.AuthenticationRecoveryPassword;
 import cl.nescorp.provider.aplication.dto.AuthenticationRequest;
 import cl.nescorp.provider.aplication.dto.AuthenticationResponse;
 import cl.nescorp.provider.aplication.dto.RegisterRequest;
+import cl.nescorp.provider.aplication.entity.Funcionario;
 import cl.nescorp.provider.aplication.entity.LoginHistory;
 import cl.nescorp.provider.aplication.entity.Token;
 import cl.nescorp.provider.aplication.entity.TokenType;
@@ -48,8 +49,8 @@ public class AuthenticationService {
 	private final UserDetailsService userDetailsService;
 
 	public AuthenticationResponse register(RegisterRequest request) {
-		var user = Usuario.builder().correo(request.getCorreo()).password(passwordEncoder.encode("contraseña"))
-				.estado(1).fechaCreacion(Utils.findDateTimeNow()).dni(Integer.parseInt(request.getDni()))
+		var user = Usuario.builder().funcionario(new Funcionario(request.getDni(), request.getCorreo(), request.getNombres(), request.getApellidos())).password(passwordEncoder.encode("contraseña"))
+				.estado(1).fechaCreacion(Utils.findDateTimeNow())
 				.role(request.getRole()).build();
 		var savedUser = repository.save(user);
 		var jwtToken = jwtService.generateToken(user);
@@ -69,8 +70,8 @@ public class AuthenticationService {
 
 			if (validate) {
 
-				user = repository.findByDni(Integer.parseInt(request.getRut())).orElseThrow();
-				String messagge = "Welcome " + user.getCorreo();
+				user = repository.findByFuncionarioDni(Integer.parseInt(request.getRut())).orElseThrow();
+				String messagge = "Welcome " + user.getFuncionario().getCorreo();
 				loginRepository.save(LoginHistory.builder().usuario(user).validate(true).build());
 				Long countSession = loginRepository.countByUsuarioIdAndValidate(user.getId(), true);
 				if (countSession == 1) {
@@ -84,7 +85,7 @@ public class AuthenticationService {
 						.message(messagge).build();
 			}
 		} catch (BadCredentialsException e) {
-			user = repository.findByDni(Integer.parseInt(request.getRut())).orElse(null);
+			user = repository.findByFuncionarioDni(Integer.parseInt(request.getRut())).orElse(null);
 			if (null == user) {
 				return new AuthenticationResponse(null, null, "Usuario no creado !!!");
 			} else if (null == request.getPassword()) {
@@ -152,7 +153,7 @@ public class AuthenticationService {
 		refreshToken = authHeader.substring(7);
 		userEmail = jwtService.extractUsername(refreshToken);
 		if (userEmail != null) {
-			var user = this.repository.findByDni(Integer.parseInt(userEmail)).orElseThrow();
+			var user = this.repository.findByFuncionarioDni(Integer.parseInt(userEmail)).orElseThrow();
 			if (jwtService.isTokenValid(refreshToken, user)) {
 				var accessToken = jwtService.generateToken(user);
 				revokeAllUserTokens(user);
@@ -169,13 +170,13 @@ public class AuthenticationService {
 
 		Usuario user = null;
 		if (validate) {
-			user = repository.findByDniAndCorreo(Integer.parseInt(request.getRut()), request.getCorreo()).orElse(null);
+			user = repository.findByFuncionarioDniAndFuncionarioCorreo(Integer.parseInt(request.getRut()), request.getCorreo()).orElse(null);
 			if (null == user) {
 				return "Datos ingresados no validos!!!";
 			} else {
 				// enviar correo
 				Map<String, Object> map1 = new HashMap();
-				map1.put("iss", user.getCorreo());
+				map1.put("iss", user.getFuncionario().getCorreo());
 				String token = jwtService.buildToken(map1, user, 500000);
 				// emailService.sendEmail("contacto.droness@gmail.com", "Soporte@sporte.cl",
 				// token);
@@ -196,7 +197,7 @@ public class AuthenticationService {
 		token = authHeader.substring(7);
 		dni = jwtService.extractUsername(token);
 		if (dni != null) {
-			var user = this.repository.findByDni(Integer.parseInt(dni)).orElseThrow();
+			var user = this.repository.findByFuncionarioDni(Integer.parseInt(dni)).orElseThrow();
 			if (jwtService.isTokenValid(token, user) && null != request.getPassword()) {
 				user.setPassword(passwordEncoder.encode(request.getPassword()));
 				repository.save(user);
@@ -209,7 +210,7 @@ public class AuthenticationService {
 
 	}
 
-	public String changeNewPassword(String password, HttpServletRequest request) {
+	public String changeNewPassword(AuthenticationRecoveryPassword requestBody, HttpServletRequest request) {
 
 		final String authHeader = request.getHeader("Authorization");
 		final String jwt;
@@ -225,9 +226,10 @@ public class AuthenticationService {
 			UserDetails userDetails = userDetailsService.loadUserByUsername(user);
 			if (jwtService.isTokenValid(jwt, userDetails)) {
 				userEmail = jwtService.extractIssuer(jwt);
-				Usuario userFound = repository.findByDniAndCorreo(Integer.parseInt(user), userEmail).orElse(null);
+				Usuario userFound = repository.findByFuncionarioDniAndFuncionarioCorreo(Integer.parseInt(user), userEmail).orElse(null);
 				if (null != userFound) {
-					userFound.setPassword(passwordEncoder.encode(password));
+					userFound.setPassword(passwordEncoder.encode(requestBody.getPassword()));
+					repository.save(userFound);
 					return "Contraseña actualizada correctamente";
 				} else {
 					return "Token mal generado para cambio de contraseña";

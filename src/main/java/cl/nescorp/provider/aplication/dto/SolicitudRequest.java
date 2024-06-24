@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRecoveryPassword {
+public class SolicitudRequest {
+	
+	private Long cargoCreador;
+	private Long mecanismoDeCompra;
 
-  private String rut;
-  private String correo;
-  private String password;
 }

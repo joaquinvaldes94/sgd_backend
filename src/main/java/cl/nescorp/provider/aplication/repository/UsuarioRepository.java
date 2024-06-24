@@ -7,8 +7,8 @@ import cl.nescorp.provider.aplication.entity.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
-  Optional<Usuario> findByDni(Integer dni);
+  Optional<Usuario> findByFuncionarioDni(Integer dni);
   
-  Optional<Usuario> findByDniAndCorreo(Integer dni, String correo);
+  Optional<Usuario> findByFuncionarioDniAndFuncionarioCorreo(Integer dni, String correo);
 
 }

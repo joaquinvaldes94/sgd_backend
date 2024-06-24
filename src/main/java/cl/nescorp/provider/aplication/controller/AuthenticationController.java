@@ -48,8 +48,8 @@ public class AuthenticationController {
 	}
 	
 	@PostMapping("/changeNewPassword")
-	public String changeNewPassword(@RequestBody String password,HttpServletRequest request) {
-		return service.changeNewPassword(password, request);
+	public String changeNewPassword(@RequestBody AuthenticationRecoveryPassword requestBody,HttpServletRequest request) {
+		return service.changeNewPassword(requestBody, request);
 	}
 
 
