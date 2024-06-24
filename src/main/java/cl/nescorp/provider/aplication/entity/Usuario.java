@@ -16,7 +16,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,13 +42,7 @@ public class Usuario implements UserDetails {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Column(name = "dni", length = 9, nullable = false, unique = true)
-	private Integer dni;
-
-	@Column(name = "correo", nullable = false, unique = true)
-	private String correo;
-
-	@Column(name = "password", length = 16, nullable = false)
+	@Column(name = "password", length = 120, nullable = false)
 	private String password;
 
 	@Column(name = "estado", nullable = false)
@@ -54,6 +50,10 @@ public class Usuario implements UserDetails {
 
 	@Column(name = "fechaCreacion", nullable = false)
 	private LocalDateTime fechaCreacion;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="FUNCIONARIO_id")
+	private Funcionario funcionario;
 
 	@Enumerated(EnumType.STRING)
 	private Role role;
@@ -72,7 +72,7 @@ public class Usuario implements UserDetails {
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		return dni.toString();
+		return funcionario.getDni().toString();
 	}
 
 	@Override
