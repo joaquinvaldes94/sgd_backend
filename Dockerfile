@@ -29,5 +29,4 @@ WORKDIR /app
 # Copiar el archivo JAR generado desde la etapa de construcción anterior
 COPY --from=build /app/target/*.jar app.jar
 
-# Ejecutar la aplicación
 CMD ["java", "-jar", "app.jar"]
