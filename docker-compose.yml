@@ -1,11 +1,11 @@
-version: "3"
-
 services:
   jaba-app:
     container_name: sgd-back
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
+    volumes:
+      - ./src:/app/target
     environment:
       - DATABASE_URL=jdbc:mysql://bd:3306/${MYSQL_DATABASE}?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=America/Santiago&verifyServerCertificate=false&useSSL=true&requireSSL=false
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
