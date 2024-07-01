@@ -1,11 +1,11 @@
 services:
-  jaba-app:
+  java-app:
     container_name: sgd-back
     build:
       context: .
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile
     volumes:
-      - ./src:/app/target
+      - .:/usr/src/app
     environment:
       - DATABASE_URL=jdbc:mysql://bd:3306/${MYSQL_DATABASE}?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=America/Santiago&verifyServerCertificate=false&useSSL=true&requireSSL=false
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
@@ -19,8 +19,8 @@ services:
     container_name: bd-sgd-back
     image: mysql
     restart: always
-    # ports:
-    #   - "3306:3306"
+    ports:
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
