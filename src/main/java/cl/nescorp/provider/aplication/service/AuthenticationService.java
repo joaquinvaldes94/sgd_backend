@@ -62,7 +62,7 @@ public class AuthenticationService {
 	public AuthenticationResponse authenticate(AuthenticationRequest request) throws Throwable {
 		Boolean validate = false;
 		Usuario user = null;
-
+    
 		try {
 			validate = authenticationManager
 					.authenticate(new UsernamePasswordAuthenticationToken(request.getRut(), request.getPassword()))
