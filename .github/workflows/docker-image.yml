@@ -33,7 +33,6 @@ jobs:
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         
       run: |
-        docker login -u jean1991 -p dckr_pat_GV_vEkAGCvbJnGmB35WE-TEjsWQ
 
     - name: Build Docker image
       env:
