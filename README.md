@@ -18,3 +18,11 @@ Microservicio Java para backend
 - validar BD
 
 1. abrir `http://localhost:8081/` y colocar credenciales `servidor: bd-sgd-back`, `usuario: root`, `contraseña: 123456`
+
+<!-- los pasos siguientes no se incluyen -->
+
+docker compose -f docker-compose.prod.yml up --build
+
+docker buildx build --platform linux/amd64 -t jean1991/sgd-back:1.0.0 -f Dockerfile.prod . --push
+
+docker buildx build --platform linux/amd64 -t registry.digitalocean.com/nes-corp-registry/sgd-back:1.0.0 -f Dockerfile.prod --push .
