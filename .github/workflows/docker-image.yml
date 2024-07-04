@@ -39,8 +39,8 @@ jobs:
       env:
         NEW_VERSION: ${{ steps.version.outputs.version }}
       run: |
-        docker build -t jean1991/sgd-back:$NEW_VERSION .
-        docker build -t jean1991/sgd-back:latest .
+        docker build -t jean1991/sgd-back:$NEW_VERSION -f Dockerfile.prod .
+        docker build -t jean1991/sgd-back:latest -f Dockerfile.prod .
         
     - name: Push Docker image
       env:
