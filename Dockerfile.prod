@@ -1,0 +1,25 @@
+
+FROM openjdk:17-jdk-alpine AS build
+
+WORKDIR /app
+
+# Instalar Maven directamente
+RUN apk add --no-cache maven
+
+# Copiar el archivo pom.xml y descargar las dependencias
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+COPY . .
+
+RUN mvn package -DskipTests
+
+RUN ls /app/target/
+
+FROM openjdk:17-jdk-alpine
+
+WORKDIR /app
+
+COPY --from=build /app/target/*.jar app.jar
+
+CMD ["java", "-jar", "app.jar"]

@@ -15,7 +15,8 @@ public class DemoController {
 
 	@GetMapping(value="/pruebaAppFreeToken",produces = {MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<String> sayHello() {
-    return ResponseEntity.ok("Hola Nes Corp, desde endPoint free in aplicación");
+    System.out.println("Hola Nes Corp");
+    return ResponseEntity.ok("Hola Nes Corp");
   }
 
 	
