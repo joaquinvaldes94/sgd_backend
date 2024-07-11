@@ -25,4 +25,6 @@ docker compose -f docker-compose.prod.yml up --build
 
 docker buildx build --platform linux/amd64 -t jean1991/sgd-back:1.0.0 -f Dockerfile.prod . --push
 
+docker login registry.digitalocean.com
+token digital: dop_v1_415f10993bf9b84ed2c06f2e5512b72aca45e874cc70f4a31c8c07b9c62c7115
 docker buildx build --platform linux/amd64 -t registry.digitalocean.com/nes-corp-registry/sgd-back:1.0.0 -f Dockerfile.prod --push .
