@@ -18,4 +18,15 @@ public class AuthenticationResponse {
   private String refreshToken;
   @JsonProperty("message")
   private String message;
+  @JsonProperty("passValid")
+  private Boolean passValid;
+public AuthenticationResponse(String accessToken, String refreshToken, String message) {
+	super();
+	this.accessToken = accessToken;
+	this.refreshToken = refreshToken;
+	this.message = message;
+	this.passValid = null;
+}
+  
+  
 }

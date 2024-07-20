@@ -63,6 +63,9 @@ public class Usuario implements UserDetails {
 
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.MERGE)
 	private List<LoginHistory> logueos;
+	
+	@Column(name = "validPass", nullable = false)
+	private Boolean validPass;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

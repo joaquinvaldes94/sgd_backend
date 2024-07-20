@@ -40,7 +40,9 @@ public class LoginHistory   {
 	
 	@Column(name="validate", nullable  = false )
 	private Boolean validate;
-	
+
+	@Column(name="recovery", nullable  = true )
+	private Boolean recovery;
 	
 	
 }
