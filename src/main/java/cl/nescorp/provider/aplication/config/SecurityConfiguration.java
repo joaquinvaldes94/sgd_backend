@@ -26,7 +26,7 @@ public class SecurityConfiguration  {
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-		http.cors(cors -> cors.disable()).csrf(csrf -> csrf.disable()).authorizeHttpRequests(authorizeRequests -> {
+		http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(authorizeRequests -> {
 
 			authorizeRequests.requestMatchers("/swagger-ui/**").hasAuthority("ADMIN")
 					.requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
