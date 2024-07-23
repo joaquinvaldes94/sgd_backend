@@ -1,6 +1,6 @@
 package cl.nescorp.provider.aplication.entity;
 
-public enum TipoMecanismoDeCompra {
+public enum TipoMecanismoCompraEnum {
 	
 	CONVENIO_MARCO,
 	TRATO_DIRECTO,

@@ -22,20 +22,30 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "ESTADO_SOLICITUD")
-public class EstadoSolicitud {
+@Table(name = "INDICE_PRESUPUESTARIO")
+public class IndicePresupuestario {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
+	private Integer id;
+	
+	@Column(name = "subtitulo", nullable = false)
+	private String subtitulo;
+	
+	@Column(name = "item", nullable = false)
+	private String item;
+	
+	@Column(name = "asignacion", nullable = false)
+	private String asignacion;
+	
 	@Column(name = "nombre", nullable = false)
 	private String nombre;
-
-
+	
 	@Column(name = "descripcion", nullable = false)
 	private String descripcion;
 	
 	@JsonIgnore
-	@OneToMany( mappedBy="estadoSolicitud", fetch = FetchType.LAZY)
-	private List<Solicitud> solicitudes;
+	@OneToMany( mappedBy="indicePresupuestario", fetch = FetchType.LAZY)
+	private List<Item> items;
+
 }

@@ -40,4 +40,6 @@ public class Unidad {
 	@OneToMany( mappedBy="unidadMoneda", fetch = FetchType.LAZY)
 	private List<MecanismoCompra> mecanismosCompra;
 
+	
+	
 }
