@@ -7,8 +7,10 @@ import cl.nescorp.provider.aplication.dto.AuthenticationRecoveryPassword;
 import cl.nescorp.provider.aplication.dto.AuthenticationRequest;
 import cl.nescorp.provider.aplication.dto.AuthenticationResponse;
 import cl.nescorp.provider.aplication.dto.RegisterRequest;
+import cl.nescorp.provider.aplication.dto.ResponseDTO;
 import cl.nescorp.provider.aplication.entity.Funcionario;
 import cl.nescorp.provider.aplication.entity.LoginHistory;
+import cl.nescorp.provider.aplication.entity.MessageToEnum;
 import cl.nescorp.provider.aplication.entity.Token;
 import cl.nescorp.provider.aplication.entity.TokenType;
 import cl.nescorp.provider.aplication.entity.Usuario;
@@ -20,12 +22,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,31 +47,32 @@ public class AuthenticationService {
 	private final JwtService jwtService;
 	private final AuthenticationManager authenticationManager;
 	private final LoginHistoryRepository loginRepository;
-	private final EmailService emailService;
+	//private final EmailService emailService;
 	private final UserDetailsService userDetailsService;
 
 	public AuthenticationResponse register(RegisterRequest request) {
-		var user = Usuario.builder().funcionario(new Funcionario(request.getDni(), request.getCorreo(), request.getNombres(), request.getApellidos())).password(passwordEncoder.encode("contraseña"))
-				.estado(1).fechaCreacion(Utils.findDateTimeNow())
-				.role(request.getRole()).build();
+		var user = Usuario.builder()
+				.funcionario(new Funcionario(request.getDni(), request.getCorreo(), request.getNombres(),
+						request.getApellidos()))
+				.password(passwordEncoder.encode("contraseña")).estado(1).fechaCreacion(Utils.findDateTimeNow())
+				.role(request.getRole()).validPass(false).build();
 		var savedUser = repository.save(user);
 		var jwtToken = jwtService.generateToken(user);
 		var refreshToken = jwtService.generateRefreshToken(user);
 		saveUserToken(savedUser, jwtToken);
-		return AuthenticationResponse.builder().accessToken(jwtToken).refreshToken(refreshToken).build();
+		// envio de correo de creacion de usuario
+		return AuthenticationResponse.builder().accessToken(jwtToken).refreshToken(refreshToken)
+				.message(MessageToEnum.BIENVENIDA_NUEVO_USUARIO.name()).build();
 	}
 
-	public AuthenticationResponse authenticate(AuthenticationRequest request) throws Throwable {
+	public ResponseDTO authenticate(AuthenticationRequest request) throws Throwable {
 		Boolean validate = false;
 		Usuario user = null;
-    
 		try {
 			validate = authenticationManager
 					.authenticate(new UsernamePasswordAuthenticationToken(request.getRut(), request.getPassword()))
 					.isAuthenticated();
-
 			if (validate) {
-
 				user = repository.findByFuncionarioDni(Integer.parseInt(request.getRut())).orElseThrow();
 				String messagge = "Welcome " + user.getFuncionario().getCorreo();
 				loginRepository.save(LoginHistory.builder().usuario(user).validate(true).build());
@@ -81,23 +84,28 @@ public class AuthenticationService {
 				var refreshToken = jwtService.generateRefreshToken(user);
 				revokeAllUserTokens(user);
 				saveUserToken(user, jwtToken);
-				return AuthenticationResponse.builder().accessToken(jwtToken).refreshToken(refreshToken)
-						.message(messagge).build();
+				return new ResponseDTO(HttpStatus.OK, AuthenticationResponse.builder().accessToken(jwtToken)
+						.refreshToken(refreshToken).message(messagge).passValid(user.getValidPass()).build());
 			}
 		} catch (BadCredentialsException e) {
 			user = repository.findByFuncionarioDni(Integer.parseInt(request.getRut())).orElse(null);
 			if (null == user) {
-				return new AuthenticationResponse(null, null, "Usuario no creado !!!");
+				return new ResponseDTO(HttpStatus.NOT_ACCEPTABLE,
+						new AuthenticationResponse(null, null, "Usuario no creado !!!"));
 			} else if (null == request.getPassword()) {
-				return new AuthenticationResponse(null, null, "Error contraseña ilegible!!!");
+				return new ResponseDTO(HttpStatus.NOT_ACCEPTABLE,
+						new AuthenticationResponse(null, null, "Error contraseña ilegible!!!"));
 			} else {
 				String intentos = loginFailUsuario(user);
-				return new AuthenticationResponse(null, null, "Contraseña erronea !!! " + intentos);
+				return new ResponseDTO(HttpStatus.NOT_ACCEPTABLE,
+						new AuthenticationResponse(null, null, "Contraseña erronea !!! " + intentos));
 			}
 		} catch (LockedException e) {
-			return new AuthenticationResponse(null, null, "Cuenta Bloqueada Comuniquese con Soporte !!! ");
+			return new ResponseDTO(HttpStatus.FORBIDDEN,
+					new AuthenticationResponse(null, null, "Cuenta Bloqueada Comuniquese con Soporte !!! "));
 		} catch (AuthenticationException e) {
-			return new AuthenticationResponse(null, null, "Tu Solicitud de authenticación es erronea !!!");
+			return new ResponseDTO(HttpStatus.NOT_ACCEPTABLE,
+					new AuthenticationResponse(null, null, "Tu Solicitud de authenticación es erronea !!!"));
 		}
 
 		throw new Exception("Falla en autenticación");
@@ -165,52 +173,55 @@ public class AuthenticationService {
 		}
 	}
 
-	public String recoveryPassword(AuthenticationRecoveryPassword request) {
+	public AuthenticationResponse recoveryPassword(AuthenticationRecoveryPassword request) {
 		Boolean validate = !request.getCorreo().isEmpty() && !request.getRut().isEmpty() ? true : false;
 
 		Usuario user = null;
 		if (validate) {
-			user = repository.findByFuncionarioDniAndFuncionarioCorreo(Integer.parseInt(request.getRut()), request.getCorreo()).orElse(null);
+			user = repository
+					.findByFuncionarioDniAndFuncionarioCorreo(Integer.parseInt(request.getRut()), request.getCorreo())
+					.orElse(null);
 			if (null == user) {
-				return "Datos ingresados no validos!!!";
+				return new AuthenticationResponse(null, null, MessageToEnum.DATOS_INGRESADOS_INVALIDOS.name());
 			} else {
-				// enviar correo
-				Map<String, Object> map1 = new HashMap();
+				Map<String, Object> map1 = new HashMap<String, Object>();
 				map1.put("iss", user.getFuncionario().getCorreo());
 				String token = jwtService.buildToken(map1, user, 500000);
+				user.setEstado(1);
+				user.setPassword(passwordEncoder.encode("contraseña"));
+				user.setValidPass(false);
+				repository.save(user);
+				loginRepository.save(LoginHistory.builder().usuario(user).validate(true).recovery(true).build());
 				// emailService.sendEmail("contacto.droness@gmail.com", "Soporte@sporte.cl",
 				// token);
-				return "Link:" + token;
+				return new AuthenticationResponse(token, null, MessageToEnum.CONTRASEÑA_REESTABLECIDA.name());
 			}
 		}
 
-		return "recuperación de Contraseña incompleta contacte a soporte";
+		return new AuthenticationResponse(null, null, MessageToEnum.CONTACTE_A_SOPORTE.name());
 	}
 
-	public String changeFirstPassword(AuthenticationRequest request, HttpServletRequest httpRequest) {
-		final String authHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
-		final String token;
-		final String dni;
-		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-			return "Token No Valido";
-		}
-		token = authHeader.substring(7);
-		dni = jwtService.extractUsername(token);
+	public String changePasswordSecured(AuthenticationRequest request, HttpServletRequest httpRequest) {
+		String authHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
+		String token = authHeader.substring(7);
+		String dni = jwtService.extractUsername(token);
 		if (dni != null) {
 			var user = this.repository.findByFuncionarioDni(Integer.parseInt(dni)).orElseThrow();
 			if (jwtService.isTokenValid(token, user) && null != request.getPassword()) {
 				user.setPassword(passwordEncoder.encode(request.getPassword()));
+				user.setValidPass(true);
 				repository.save(user);
 				return "contraseña cambiada correctamente";
+			} else {
+				return "No fue posible validar usuario ni token";
 			}
 		} else {
 			return "No fue posible validar el token";
 		}
-		return null;
 
 	}
 
-	public String changeNewPassword(AuthenticationRecoveryPassword requestBody, HttpServletRequest request) {
+	public String createNewPassword(AuthenticationRecoveryPassword requestBody, HttpServletRequest request) {
 
 		final String authHeader = request.getHeader("Authorization");
 		final String jwt;
@@ -226,9 +237,11 @@ public class AuthenticationService {
 			UserDetails userDetails = userDetailsService.loadUserByUsername(user);
 			if (jwtService.isTokenValid(jwt, userDetails)) {
 				userEmail = jwtService.extractIssuer(jwt);
-				Usuario userFound = repository.findByFuncionarioDniAndFuncionarioCorreo(Integer.parseInt(user), userEmail).orElse(null);
+				Usuario userFound = repository
+						.findByFuncionarioDniAndFuncionarioCorreo(Integer.parseInt(user), userEmail).orElse(null);
 				if (null != userFound) {
 					userFound.setPassword(passwordEncoder.encode(requestBody.getPassword()));
+					userFound.setValidPass(true);
 					repository.save(userFound);
 					return "Contraseña actualizada correctamente";
 				} else {

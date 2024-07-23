@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="tipo_cargo")
+@Table(name="TIPO_CARGO")
 public class TipoCargo {
 
 	
