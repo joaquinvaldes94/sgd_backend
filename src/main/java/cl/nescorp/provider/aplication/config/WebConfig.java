@@ -13,11 +13,11 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("https://front-dev.nes-sgd.cl", "http://localhost:3000", "http://front-dev.nes-sgd.cl", "https://front.nes-sgd.cl", "http://front.nes-sgd.cl")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
+                registry.addMapping("/**") // Permite CORS en todas las rutas
+                        .allowedOrigins("http://localhost:3000", "https://front-dev.nes-sgd.cl", "https://front-dev.nes-sgd.cl") // Origen permitido
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Métodos HTTP permitidos
+                        .allowedHeaders("*") // Permite todos los headers
+                        .allowCredentials(true); // Permite cookies y datos de autenticación
             }
         };
     }
