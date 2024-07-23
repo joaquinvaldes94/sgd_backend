@@ -14,7 +14,7 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Permite CORS en todas las rutas
-                        .allowedOrigins("http://localhost:3000") // Origen permitido
+                        .allowedOrigins("http://localhost:3000", "https://front-dev.nes-sgd.cl", "https://front-dev.nes-sgd.cl") // Origen permitido
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Métodos HTTP permitidos
                         .allowedHeaders("*") // Permite todos los headers
                         .allowCredentials(true); // Permite cookies y datos de autenticación
