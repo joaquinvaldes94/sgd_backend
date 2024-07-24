@@ -28,7 +28,7 @@ public class SecurityConfiguration  {
 
 		http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(authorizeRequests -> {
 
-			authorizeRequests.requestMatchers("/swagger-ui/**").hasAuthority("ADMIN")
+			authorizeRequests
 					.requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
 					.requestMatchers(HttpMethod.POST, "/api/v1/auth/authenticate").permitAll()
 					.requestMatchers(HttpMethod.POST, "/api/v1/auth/refresh-token").permitAll()
