@@ -2,7 +2,6 @@ package cl.nescorp.provider.aplication.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -17,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfiguration  {
+public class SecurityConfiguration {
 
 	private final JwtAuthenticationFilter jwtAuthFilter;
 	private final AuthenticationProvider authenticationProvider;
@@ -29,19 +28,22 @@ public class SecurityConfiguration  {
 		http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(authorizeRequests -> {
 
 			authorizeRequests
-					.requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
-					.requestMatchers(HttpMethod.POST, "/api/v1/auth/authenticate").permitAll()
-					.requestMatchers(HttpMethod.POST, "/api/v1/auth/refresh-token").permitAll()
-					.requestMatchers(HttpMethod.POST, "/api/v1/auth/recoveryPassword").permitAll()
-					.requestMatchers(HttpMethod.POST, "/api/v1/auth/createNewPassword").permitAll()
-					.requestMatchers(HttpMethod.GET, "api/v1/demo-controller/pruebaAppFreeToken").permitAll()
+					.requestMatchers(
+							"/swagger-ui.html",
+							"/api/v1/auth/register",
+							"/api/v1/auth/authenticate",
+							"/api/v1/auth/refresh-token",
+							"/api/v1/auth/recoveryPassword",
+							"/api/v1/auth/createNewPassword",
+							"api/v1/demo-controller/pruebaAppFreeToken").permitAll()
 					.anyRequest().authenticated();
 
 		}).sessionManagement(sessionManage -> {
 			sessionManage.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		}).authenticationProvider(authenticationProvider)
 				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).logout(log -> {
-					log.logoutUrl("/api/v1/auth/logout").addLogoutHandler(logoutHandler).logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext());
+					log.logoutUrl("/api/v1/auth/logout").addLogoutHandler(logoutHandler).logoutSuccessHandler(
+							(request, response, authentication) -> SecurityContextHolder.clearContext());
 				});
 
 		/*
