@@ -1,6 +1,9 @@
 package cl.nescorp.provider.aplication.entity;
 
+import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.data.annotation.CreatedDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -15,13 +18,16 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Data
 @Table(name = "MECANISMO_COMPRA")
 public class MecanismoCompra {
 
@@ -41,16 +47,36 @@ public class MecanismoCompra {
 	@Column(name = "comentario", nullable = false)
 	private String comentario;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="UNIDAD_id")
-	private Unidad unidadMoneda;
+	@Column(name = "fechaCreacion", nullable = false)
+	@CreatedDate
+	private LocalDateTime fechaCreacion;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="TIPO_MECANISMO_COMPRA_id")
-	private TipoMecanismoCompra tipoMecanismoCompra;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="MONEDA_id" , nullable = false)
+	private Moneda moneda;
 	
 	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="CLASIFICACION_COMPRA_id" , nullable = false)
+	private ClasificacionCompra clasificacionCompra;
+	
+	@JsonIgnore
+	@ToString.Exclude
+	@OneToMany( mappedBy="mecanismoCompra", fetch = FetchType.EAGER)
+	private List<Requisito> detalleRequisitos;
+	
+	@JsonIgnore
+	@ToString.Exclude
 	@OneToMany( mappedBy="mecanismoCompra", fetch = FetchType.LAZY)
-	private List<DetalleRequisitoCompra> detalleRequisitos;
+	private List<Solicitud> solicitudes;
+
+	public MecanismoCompra(Long id) {
+		super();
+		this.id = id;
+	}
+	
+	
+	
 
 }

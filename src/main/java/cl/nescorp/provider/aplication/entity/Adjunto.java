@@ -41,8 +41,8 @@ public class Adjunto {
 	private Solicitud solicitud;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name="REQUISITO_COMPRA_id")
-	private RequisitoCompra requisitoCompra;
+	@JoinColumn(name="REQUISITO_id")
+	private Requisito requisito;
 	
 
 	

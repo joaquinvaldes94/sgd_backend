@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -20,13 +22,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="DEPENDENCIA")
-public class Dependencia {
+@Table(name="PUESTO")
+public class Puesto {
 	
 	@Id
 	@GeneratedValue(strategy =  GenerationType.IDENTITY)
@@ -35,31 +38,35 @@ public class Dependencia {
 	@Column(name="nombre",nullable = false)
 	private String nombre;
 	
-	@Column(name="descripcion",nullable = true)
-	private String descripcion;
+	@Column(name="funciones",nullable = true)
+	private String funciones;
 	
-	@Column(name="timbre",nullable = true)
-	private String timbre;
+	@Column(name = "fechaCreacion", nullable = false)
+    @CreatedDate
+    private LocalDateTime fechaCreacion;
 	
-	@Column(name="codigo",nullable = true)
-	private String codigoUnidad;
+	@Column(name="fechaTermino",nullable = true)
+	private LocalDateTime fechaTermino;
+	
+	@Column(name="requerido",nullable = false)
+	private Boolean requerido;
 	
 	@Column(name="estado",nullable = false)
 	private Integer estado;
 	
-	@Column(name = "fechaCreacion")
-	@CreatedDate
-    private LocalDateTime fechaCreacion;
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name="DEPENDENCIA_id", nullable = false)
+	private Dependencia dependencia;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name="TIPO_DEPENDENCIA_id")
-	private TipoDependencia tipoDependencia;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name="SECTOR_id")
-	private Sector sector;
+	@ManyToOne(optional = false, fetch = FetchType.EAGER)
+	@JoinColumn(name="TIPO_PUESTO_id", nullable = false)
+	private TipoPuesto tipoPuesto;
 	
-	@OneToMany( mappedBy="dependencia", fetch = FetchType.EAGER)
-	private List<Puesto> puestos;
+	@JsonIgnore
+	@OneToMany( mappedBy="puesto", fetch = FetchType.LAZY)
+	private List<Cargo> cargos;
+
 	
 }
+	

@@ -1,13 +1,21 @@
 package cl.nescorp.provider.aplication.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.data.annotation.CreatedDate;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cl.nescorp.provider.aplication.util.Utils;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -41,12 +49,13 @@ public class Funcionario {
 	private String apellidos;
 
 	@Column(name = "nacimiento")
-	private String nacimiento;
+	private LocalDate nacimiento;
 
 	@Column(name = "estado")
 	private Integer estado;
 
 	@Column(name = "fechaCreacion", nullable = false)
+	@CreatedDate
 	private LocalDateTime fechaCreacion;
 	
 	@OneToOne(mappedBy="funcionario")
@@ -63,6 +72,9 @@ public class Funcionario {
 		this.fechaCreacion = Utils.findDateTimeNow();
 	}
  
+	@JsonIgnore
+	@OneToMany( mappedBy="funcionario", fetch = FetchType.LAZY)
+	private List<Cargo> cargos;
 	
 
 

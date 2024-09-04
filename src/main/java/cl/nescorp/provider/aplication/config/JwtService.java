@@ -33,7 +33,7 @@ public class JwtService {
 	public String extractIssuer(String token) {
 		return extractClaim(token, Claims::getIssuer);
 	}
-	
+
 	public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
 		final Claims claims = extractAllClaims(token);
 		return claimsResolver.apply(claims);
@@ -52,12 +52,11 @@ public class JwtService {
 	}
 
 	public String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
-		return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())
-				.setIssuedAt(new Date(System.currentTimeMillis()))
+		return Jwts.builder().setHeaderParam("ROLE", userDetails.getAuthorities().stream().findFirst().orElseGet(null))
+				.setSubject(userDetails.getUsername()).setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + expiration))
 				.signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
 	}
-	
 
 	public boolean isTokenValid(String token, UserDetails userDetails) {
 		final String username = extractUsername(token);
@@ -67,9 +66,10 @@ public class JwtService {
 	public boolean isTokenValidPassword(String token, UserDetails userDetails, String emailUser) {
 		final String username = extractUsername(token);
 		final String userMail = extractIssuer(token);
-		return (username.equals(userDetails.getUsername())) && userMail.equals(emailUser) &&!isTokenExpired(token);
+		return (username.equals(userDetails.getUsername())) && userMail.equals(emailUser) && !isTokenExpired(token);
 	}
-	private boolean isTokenExpired(String token) {
+
+	public boolean isTokenExpired(String token) {
 		return extractExpiration(token).before(new Date());
 	}
 

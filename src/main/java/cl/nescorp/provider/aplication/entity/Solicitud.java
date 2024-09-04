@@ -50,6 +50,13 @@ public class Solicitud {
 	@Column(name = "totalNeto", nullable = false)
 	private Long totalNeto;
 	
+	@Column(name = "valorDiaMoneda", nullable = true)
+	private Long valorDiaMoneda;
+	
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name="MONEDA_id", nullable = false)
+	private Moneda moneda;
+	
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name="MECANISMO_COMPRA_id", nullable = false)
 	private MecanismoCompra mecanismoCompra;
@@ -57,7 +64,6 @@ public class Solicitud {
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name="CARGO_id", nullable = false)
 	private Cargo cargoCreador;
-	
 	
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name="ESTADO_SOLICITUD_id", nullable = false)

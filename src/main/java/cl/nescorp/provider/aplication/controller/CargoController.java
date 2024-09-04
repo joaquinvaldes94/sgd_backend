@@ -10,17 +10,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cl.nescorp.provider.aplication.dto.CargoDTO;
 import cl.nescorp.provider.aplication.dto.ResponseDTO;
-import cl.nescorp.provider.aplication.dto.UnidadDTO;
-import cl.nescorp.provider.aplication.service.UnidadService;
+import cl.nescorp.provider.aplication.service.CargoService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/Unidad")
+@RequestMapping("/api/v1/Cargo")
 @RequiredArgsConstructor
-public class UnidadController {
+public class CargoController {
 	
-	private final UnidadService service;
+	private final CargoService service;
 	
 	@GetMapping(path = "/findAll",produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseDTO findAll() {
@@ -34,13 +34,13 @@ public class UnidadController {
 
 	@PostMapping(path = "/save", consumes = "application/json; charset=utf-8", produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public ResponseDTO save(@RequestBody UnidadDTO request) {
+	public ResponseDTO save(@RequestBody CargoDTO request) {
 		return service.save(request);
 	}
 
 	@PutMapping(path = "/update", consumes = "application/json; charset=utf-8", produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public ResponseDTO update(@RequestBody UnidadDTO request) {
+	public ResponseDTO update(@RequestBody CargoDTO request) {
 		return service.update(request);
 	}
 

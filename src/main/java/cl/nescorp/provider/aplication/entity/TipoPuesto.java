@@ -3,8 +3,6 @@ package cl.nescorp.provider.aplication.entity;
 import java.util.List;
 
 
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,8 +21,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="TIPO_CARGO")
-public class TipoCargo {
+@Table(name="TIPO_PUESTO")
+public class TipoPuesto {
 
 	
 	@Id
@@ -37,8 +35,8 @@ public class TipoCargo {
 	@Column(name="descripcion",nullable = true)
 	private String descripcion;
 	
-	@OneToMany( mappedBy="tipoCargo", fetch = FetchType.LAZY)
-	private List<Cargo> cargos;
+	@OneToMany( mappedBy="tipoPuesto", fetch = FetchType.LAZY)
+	private List<Puesto> puestos;
 	
 	
 }

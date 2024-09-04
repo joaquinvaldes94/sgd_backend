@@ -10,17 +10,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cl.nescorp.provider.aplication.dto.MecanismoCompraRequestDTO;
+import cl.nescorp.provider.aplication.dto.ClasificacionCompraDTO;
 import cl.nescorp.provider.aplication.dto.ResponseDTO;
-import cl.nescorp.provider.aplication.service.MecanismoCompraService;
+import cl.nescorp.provider.aplication.service.ClasificacionCompraService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/MecanismoCompra")
+@RequestMapping("/api/v1/ClasificacionCompra")
 @RequiredArgsConstructor
-public class MecanismoCompraController {
+public class ClasificacionCompraController {
 
-	private final MecanismoCompraService service;
+	private final ClasificacionCompraService service;
 
 	@GetMapping(path = "/findAll", produces = {
 			MediaType.APPLICATION_JSON_VALUE })
@@ -34,23 +34,18 @@ public class MecanismoCompraController {
 	}
 
 	@PostMapping(path = "/save", consumes = "application/json; charset=utf-8", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseDTO save(@RequestBody MecanismoCompraRequestDTO request ) {
+	public ResponseDTO save(@RequestBody ClasificacionCompraDTO request ) {
 		return service.save(request);
 	}
 	
 	@PutMapping(path = "/update", consumes = "application/json; charset=utf-8", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseDTO update(@RequestBody MecanismoCompraRequestDTO request ) {
+	public ResponseDTO update(@RequestBody ClasificacionCompraDTO request ) {
 		return service.update(request);
 	}
 	
 	@DeleteMapping(path = "/deleteById/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseDTO delete(@PathVariable("id") String id ) {
 		return service.delete(id);
-	}
-	
-	@GetMapping(path = "/findByClasificacionCompraID/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseDTO findByClasificacionCompraID(@PathVariable("id") String id) {
-		return service.findByClasificacionCompraID(id);
 	}
 	
 }

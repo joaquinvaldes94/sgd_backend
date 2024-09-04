@@ -1,5 +1,9 @@
 package cl.nescorp.provider.aplication.entity;
 
+import lombok.Getter;
+
+
+@Getter
 public enum TipoCargoEnum {
 	Jefatura(Long.valueOf(1)),
 	Administrativo(Long.valueOf(2)),
@@ -8,9 +12,6 @@ public enum TipoCargoEnum {
 	
 	private Long id;
 
-	public Long getId() {
-		return id;
-	}
 
 	public void setId(Long id) {
 		this.id = id;

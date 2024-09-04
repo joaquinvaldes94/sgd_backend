@@ -1,6 +1,9 @@
 package cl.nescorp.provider.aplication.entity;
 
+import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.data.annotation.CreatedDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -27,7 +30,7 @@ public class IndicePresupuestario {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 	
 	@Column(name = "subtitulo", nullable = false)
 	private String subtitulo;
@@ -43,6 +46,10 @@ public class IndicePresupuestario {
 	
 	@Column(name = "descripcion", nullable = false)
 	private String descripcion;
+	
+	@Column(name = "fechaCreacion", nullable = false)
+	@CreatedDate
+	private LocalDateTime fechaCreacion;
 	
 	@JsonIgnore
 	@OneToMany( mappedBy="indicePresupuestario", fetch = FetchType.LAZY)

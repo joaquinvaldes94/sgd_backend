@@ -54,20 +54,13 @@ public class Cargo {
 	@Column(name="estado",nullable = false)
 	private Integer estado;
 	
-	@Column(name="vigencia",nullable = false)
-	private Boolean vigencia;
-	
-	@ManyToOne(optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name="DEPENDENCIA_id", nullable = false)
-	private Dependencia dependencia;
-	
 	@ManyToOne(optional = false ,fetch = FetchType.EAGER)
 	@JoinColumn(name="FUNCIONARIO_id", nullable = false)
 	private Funcionario funcionario;
 	
-	@ManyToOne(optional = false, fetch = FetchType.EAGER)
-	@JoinColumn(name="TIPO_CARGO_id", nullable = false)
-	private TipoCargo tipoCargo;
+	@ManyToOne(optional = false ,fetch = FetchType.EAGER)
+	@JoinColumn(name="PUESTO_id", nullable = false)
+	private Puesto puesto;
 	
 	@JsonIgnore
 	@OneToMany( mappedBy="cargoCreador", fetch = FetchType.LAZY)

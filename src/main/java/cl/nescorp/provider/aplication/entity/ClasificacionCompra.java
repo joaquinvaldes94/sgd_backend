@@ -1,8 +1,10 @@
 package cl.nescorp.provider.aplication.entity;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-
+import org.springframework.data.annotation.CreatedDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -15,15 +17,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @JsonSerialize
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Table(name = "TIPO_MECANISMO_COMPRA")
-public class TipoMecanismoCompra {
+@Data
+@Table(name = "CLASIFICACION_COMPRA")
+public class ClasificacionCompra {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,8 +39,20 @@ public class TipoMecanismoCompra {
 	@Column(name = "descripcion", nullable = false)
 	private String descripcion;
 	
+	@Column(name = "fechaCreacion", nullable = false)
+	@CreatedDate
+	private LocalDateTime fechaCreacion;
+	
 	@JsonIgnore
-	@OneToMany( mappedBy="tipoMecanismoCompra", fetch = FetchType.LAZY)
-	private List<MecanismoCompra> mecanismosDeCompra;
+	@ToString.Exclude
+	@OneToMany( mappedBy="clasificacionCompra", fetch = FetchType.EAGER)
+	private List<MecanismoCompra> mecanismosDeCompra = new ArrayList<>();
+
+	public ClasificacionCompra(Long id) {
+		super();
+		this.id = id;
+	}
+	
+	
 
 }
