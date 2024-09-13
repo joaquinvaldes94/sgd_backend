@@ -24,7 +24,7 @@ public class MonedaDTO {
 		this.id = moneda.getId();
 		this.codigo = moneda.getCodigo();
 		this.decimales = moneda.getDecimales();
-		this.nombre = moneda.getCodigo();
+		this.nombre = moneda.getNombre();
 		this.descripcion = moneda.getDescripcion();
 	}
 	
