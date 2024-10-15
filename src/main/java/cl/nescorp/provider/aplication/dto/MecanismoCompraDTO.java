@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class MecanismoCompraDTO {
 	
 	
-	private String id;
+	private String idMecanismo;
 	private String nombre;
 	private String montoMinimo;
 	private String montoMaximo;
@@ -28,7 +28,7 @@ public class MecanismoCompraDTO {
 		
 		super();
 		this.nombre = mc.getNombre();
-		this.id = String.valueOf(mc.getId());
+		this.idMecanismo = String.valueOf(mc.getId());
 		this.montoMinimo = String.valueOf(mc.getMontoMinimo());
 		this.montoMaximo = String.valueOf(mc.getMontoMaximo());
 		this.moneda = mc.getMoneda()!=null ? new MonedaDTO(mc.getMoneda()): null;

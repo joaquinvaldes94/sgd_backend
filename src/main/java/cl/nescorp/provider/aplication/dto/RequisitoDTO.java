@@ -1,5 +1,7 @@
 package cl.nescorp.provider.aplication.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cl.nescorp.provider.aplication.entity.Requisito;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +15,8 @@ import lombok.NoArgsConstructor;
 public class RequisitoDTO {
 	
 	private String nombre;
+	private String idRequisito;
+	@JsonIgnore
 	private String id;
 	private String cantidad;
 	private String obligatorio;
@@ -29,6 +33,7 @@ public class RequisitoDTO {
 		this.descripcion = req.getDescripcion();
 		this.extensiones = req.getExtensiones();
 		this.formatoBase = req.getFormatoBase();
+		this.idRequisito = String.valueOf(req.getId());
 	}
 	
 	

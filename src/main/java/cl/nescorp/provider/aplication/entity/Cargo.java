@@ -66,5 +66,10 @@ public class Cargo {
 	@OneToMany( mappedBy="cargoCreador", fetch = FetchType.LAZY)
 	private List<Solicitud> solicitudes;
 	
+	public Cargo(Long id) {
+		super();
+		this.id = id;
+	}
+	
 }
 	

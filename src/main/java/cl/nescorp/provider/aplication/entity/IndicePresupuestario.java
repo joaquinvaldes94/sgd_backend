@@ -55,4 +55,11 @@ public class IndicePresupuestario {
 	@OneToMany( mappedBy="indicePresupuestario", fetch = FetchType.LAZY)
 	private List<Item> items;
 
+	public IndicePresupuestario(Long id) {
+		super();
+		this.id = id;
+	}
+	
+	
+
 }

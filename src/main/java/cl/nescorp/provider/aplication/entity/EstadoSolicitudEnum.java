@@ -1,16 +1,21 @@
 package cl.nescorp.provider.aplication.entity;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-@RequiredArgsConstructor
-public enum EstadoSolicitudEnum {
-	INGRESADA("dsadsa"),
-	FIRMADA(""),
-	APROBADA(""),
-	EJECUTADA(""),
-	RECHAZADA(""),
-	CANCELADA("");
-	
+
 @Getter
-private final String descripcion;
-}
+public enum EstadoSolicitudEnum {
+	INGRESADA(Long.valueOf(1)),
+	PENDIENTE(Long.valueOf(2)),
+	APROBADA(Long.valueOf(3)),
+	RECHAZADA(Long.valueOf(4));
+	
+	
+	private Long id;
+	
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	private EstadoSolicitudEnum(Long id) {
+		this.id = id;
+	}}

@@ -1,5 +1,6 @@
 package cl.nescorp.provider.aplication.entity;
 
+import cl.nescorp.provider.aplication.dto.ItemRequestDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,10 +22,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "ITEM")
 public class Item {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 	
 	@Column(name = "cantidad", nullable = false)
 	private Long cantidad;
@@ -33,7 +34,7 @@ public class Item {
 	private String detalle;
 	
 	@Column(name = "precioUnitario")
-	private String precioUnitario;
+	private Long precioUnitario;
 	
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name="UNIDAD_id", nullable = false)
@@ -47,5 +48,15 @@ public class Item {
 	@JoinColumn(name="SOLICITUD_id", nullable = false)
 	private Solicitud solicitud;
 	
+	public Item(ItemRequestDTO item) {
+		
+		super();
+		this.cantidad = item.getCantidad();
+		this.detalle = item.getDetalle();
+		this.precioUnitario = item.getPrecioUnitario();
+		this.unidad = new Unidad(item.getIdUnidad());
+		this.indicePresupuestario = new IndicePresupuestario(item.getIdClasificacionPresupuestaria());
+	
+	}
 	
 }

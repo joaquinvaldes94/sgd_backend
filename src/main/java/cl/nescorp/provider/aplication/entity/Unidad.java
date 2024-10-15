@@ -46,6 +46,11 @@ public class Unidad {
 	@JsonIgnore
 	@OneToMany( mappedBy="unidad", fetch = FetchType.LAZY)
 	private List<Item> items;
+
+	public Unidad(Long id) {
+		super();
+		this.id = id;
+	}
 	
 	
 }

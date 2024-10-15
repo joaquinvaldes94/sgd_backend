@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,12 +30,12 @@ public class Solicitud {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 	
-	@Column(name = "cod", nullable = false)
+	@Column(name = "cod", nullable = true)
 	private String codigo;
 	
-	@Column(name = "numero", nullable = false)
+	@Column(name = "numero", nullable = true)
 	private Integer numero;
 	
 	@Column(name = "fechaCreacion", nullable = false)
@@ -68,14 +68,18 @@ public class Solicitud {
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name="ESTADO_SOLICITUD_id", nullable = false)
 	private EstadoSolicitud estadoSolicitud;
-	
-	@JsonIgnore
-	@OneToMany( mappedBy="solicitud", fetch = FetchType.LAZY)
+	 
+	@OneToMany(fetch = FetchType.LAZY,  cascade = CascadeType.ALL , orphanRemoval = true)
+    @JoinColumn(name = "SOLICITUD_id")
 	private List<Item> items;
 	
 	@JsonIgnore
 	@OneToMany( mappedBy="solicitud", fetch = FetchType.LAZY)
 	private List<Adjunto> adjuntos;
 	
-
+	public void addListItem(Item item){
+		items.add(item);
+	    item.setSolicitud(this);
+	}
+	
 }

@@ -38,4 +38,13 @@ public class EstadoSolicitud {
 	@JsonIgnore
 	@OneToMany( mappedBy="estadoSolicitud", fetch = FetchType.LAZY)
 	private List<Solicitud> solicitudes;
+
+	public EstadoSolicitud(Long id) {
+		super();
+		this.id = id;
+	}
+	
+	
 }
+
+

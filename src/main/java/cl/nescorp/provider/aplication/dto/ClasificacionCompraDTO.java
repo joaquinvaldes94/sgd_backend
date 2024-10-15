@@ -3,6 +3,8 @@ package cl.nescorp.provider.aplication.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cl.nescorp.provider.aplication.entity.ClasificacionCompra;
 import cl.nescorp.provider.aplication.entity.MecanismoCompra;
 import lombok.AllArgsConstructor;
@@ -17,13 +19,15 @@ import lombok.NoArgsConstructor;
 public class ClasificacionCompraDTO {
 
 	private String nombre;
+	private Long idClasificacion;
+	@JsonIgnore
 	private Long id;
 	private String descripcion;
 	private List<MecanismoCompraDTO> mecanismosCompra;
 
 	public ClasificacionCompraDTO(ClasificacionCompra mc) {
 		if (mc != null) {
-			this.id = mc.getId();
+			this.idClasificacion = mc.getId();
 			this.nombre = mc.getNombre();
 			this.descripcion=mc.getDescripcion();
 			this.mecanismosCompra = this.mappingMecanismosCompraDTO(mc.getMecanismosDeCompra());
