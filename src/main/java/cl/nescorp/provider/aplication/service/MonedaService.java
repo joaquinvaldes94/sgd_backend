@@ -44,7 +44,7 @@ public class MonedaService {
 
 		Moneda moneda = new Moneda();
 		moneda.setNombre(request.getNombre());
-		moneda.setDescripcion(request.getNombre());
+		moneda.setDescripcion(request.getDescripcion());
 		moneda.setCodigo(request.getCodigo());
 		moneda.setDecimales(request.getDecimales());
 		moneda.setFechaCreacion(Utils.findDateTimeNow());
@@ -61,7 +61,7 @@ public class MonedaService {
 				return new ResponseDTO(HttpStatus.BAD_REQUEST, null);
 			} else {
 				moneda.setNombre(request.getNombre());
-				moneda.setDescripcion(request.getNombre());
+				moneda.setDescripcion(request.getDescripcion());
 				moneda.setCodigo(request.getCodigo());
 				moneda.setDecimales(request.getDecimales());
 				moneda = monedaRepository.save(moneda);
